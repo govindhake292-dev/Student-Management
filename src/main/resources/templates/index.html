@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Management System</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            background:#f4f4f4;
+        }
+
+        .container{
+            width:90%;
+            margin:30px auto;
+        }
+
+        h1{
+            text-align:center;
+            margin-bottom:25px;
+            color:#333;
+        }
+
+        .form-box{
+
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0px 0px 10px lightgray;
+            margin-bottom:30px;
+        }
+
+        input{
+
+            width:100%;
+            padding:12px;
+            margin:10px 0;
+            border:1px solid gray;
+            border-radius:5px;
+            font-size:16px;
+
+        }
+
+        button{
+
+            padding:12px 25px;
+            border:none;
+            background:green;
+            color:white;
+            cursor:pointer;
+            border-radius:5px;
+            font-size:16px;
+
+        }
+
+        button:hover{
+
+            background:darkgreen;
+
+        }
+
+        table{
+
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+            box-shadow:0px 0px 10px lightgray;
+
+        }
+
+        table th{
+
+            background:#007bff;
+            color:white;
+            padding:15px;
+
+        }
+
+        table td{
+
+            padding:12px;
+            text-align:center;
+            border-bottom:1px solid #ddd;
+
+        }
+
+        .edit{
+
+            background:orange;
+            color:white;
+            padding:8px 15px;
+            text-decoration:none;
+            border-radius:5px;
+
+        }
+
+        .delete{
+
+            background:red;
+            color:white;
+            padding:8px 15px;
+            text-decoration:none;
+            border-radius:5px;
+
+        }
+
+        .edit:hover{
+
+            background:darkorange;
+
+        }
+
+        .delete:hover{
+
+            background:darkred;
+
+        }
+
+        @media(max-width:700px){
+
+            table{
+                font-size:14px;
+            }
+
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Student Management System</h1>
+
+    <div class="form-box">
+
+        <!--
+            th:object binds the form to the "student" model attribute.
+            th:action switches between /save (new) and /update (edit)
+            depending on whether student.id is null.
+        -->
+        <form th:action="${student.id == null} ? @{/save} : @{/update}"
+              th:object="${student}"
+              method="post">
+
+            <input type="hidden" th:field="*{id}">
+
+            <input type="text" th:field="*{name}" placeholder="Enter Name" required>
+
+            <input type="email" th:field="*{email}" placeholder="Enter Email" required>
+
+            <input type="text" th:field="*{course}" placeholder="Enter Course" required>
+
+            <button type="submit"
+                    th:text="${student.id == null} ? 'Save Student' : 'Update Student'">
+                Save Student
+            </button>
+
+        </form>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+        <tr>
+
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Course</th>
+            <th>Edit</th>
+            <th>Delete</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        <tr th:each="student : ${students}">
+
+            <td th:text="${student.id}"></td>
+
+            <td th:text="${student.name}"></td>
+
+            <td th:text="${student.email}"></td>
+
+            <td th:text="${student.course}"></td>
+
+            <td>
+
+                <a th:href="@{/edit/{id}(id=${student.id})}" class="edit">
+                    Edit
+                </a>
+
+            </td>
+
+            <td>
+
+                <a th:href="@{/delete/{id}(id=${student.id})}" class="delete"
+                   onclick="return confirmDelete()">
+                    Delete
+                </a>
+
+            </td>
+
+        </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<script>
+
+    function confirmDelete(){
+
+        return confirm("Are you sure you want to delete this student?");
+
+    }
+
+</script>
+
+</body>
+</html>
