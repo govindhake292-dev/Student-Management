@@ -1,0 +1,48 @@
+services:
+
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+
+    restart: always
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: student
+
+    ports:
+      - "3306:3306"
+
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+    networks:
+      - student-network
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot123"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  student-app:
+    build: .
+    container_name: student-app
+
+    restart: always
+
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+
+    ports:
+      - "8080:8080"
+
+    networks:
+      - student-network
+
+networks:
+  student-network:
+
+volumes:
+  mysql-data:
